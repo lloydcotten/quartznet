@@ -56,12 +56,22 @@ namespace Quartz.Impl
 		{
 			lock (syncRoot)
 			{
-				if (schedulers.ContainsKey(sched.SchedulerName))
+				var name = sched.SchedulerName;
+				var id = sched.SchedulerInstanceId;
+				if (schedulers.ContainsKey(sched.SchedulerName) && schedulers.ContainsKey(id))
 				{
-					throw new SchedulerException(string.Format(CultureInfo.InvariantCulture, "Scheduler with name '{0}' already exists.", sched.SchedulerName));
+					throw new SchedulerException(string.Format(CultureInfo.InvariantCulture, "Scheduler with name '{0}' already exists.", name));
 				}
 
-				schedulers[sched.SchedulerName] = sched;
+				if (!schedulers.ContainsKey(name)) 
+				{
+					schedulers[name] = sched;
+				}
+
+				if (!schedulers.ContainsKey(id)) 
+				{
+					schedulers[id] = sched;
+				}
 			}
 		}
 
